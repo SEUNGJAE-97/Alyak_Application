@@ -58,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String UserEmail = jsonObject.getString( "UserEmail" );
                                 String UserPwd = jsonObject.getString( "UserPwd" );
                                 String UserName = jsonObject.getString( "UserName" );
+                                String Medicine_ID = jsonObject.getString("Medicine_ID");
 
                                 Toast.makeText( getApplicationContext(), String.format("%s님 환영합니다.", UserName), Toast.LENGTH_SHORT ).show();
                                 Intent intent = new Intent( LoginActivity.this, MainActivity.class );
@@ -65,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                                 intent.putExtra( "UserEmail", UserEmail );
                                 intent.putExtra( "UserPwd", UserPwd );
                                 intent.putExtra( "UserName", UserName );
+                                intent.putExtra("Medicine_ID", Medicine_ID);
 
                                 startActivity( intent );
 

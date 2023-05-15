@@ -10,13 +10,14 @@ import java.util.Map;
 public class DataRequest extends StringRequest {
     final static private String URL = "http://alyak.dothome.co.kr/DataRequest.php";
     private Map<String, String> map;
-    //private Map<String, String>parameters;
 
-    public DataRequest(String key, Response.Listener<String> listener) {
-        super(Method.POST, URL, listener, null);
+    public DataRequest(String key, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(Method.POST, URL, listener, errorListener);
 
         map = new HashMap<>();
-        map.put("key", key);
+        if(key != null){
+            map.put("key",key);
+        }
     }
 
     @Override
