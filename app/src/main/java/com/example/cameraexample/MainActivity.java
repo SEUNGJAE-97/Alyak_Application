@@ -47,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 
 import static android.os.Environment.DIRECTORY_PICTURES;
@@ -115,6 +116,20 @@ public class MainActivity extends AppCompatActivity {
                 thread.start();
                 //System.out.println(userName);
                 Intent intent = new Intent( MainActivity.this, ResultActivity.class );
+                // null 값으로 msg가 넘어가는것을 방지하기 위한 while_loop
+                // **수정 필요함**
+                while(true){
+                    if (msg == null){
+                        try {
+                            TimeUnit.SECONDS.sleep(3);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    else{
+                        break;
+                    }
+                }
                 intent.putExtra("msg", msg);
                 intent.putExtra("imagefilepath",imageFilePath);
                 startActivity( intent );
