@@ -69,7 +69,8 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), "응답 : " + response, Toast.LENGTH_SHORT).show();
-                System.out.println(response);
+                //유니코드 -> 한글
+                System.out.println(decode(response));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -96,6 +97,22 @@ public class ResultActivity extends AppCompatActivity {
         };
         request.setShouldCache(false);
         requestQueue.add(request);
+    }
+    public static String decode(String unicode){
+        String[] unicode_Array = unicode.split("\\\\u");
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String code:unicode_Array){
+            if(!code.isEmpty()){
+                try{
+                    int unicode_integer = Integer.parseInt(code, 16);
+                    stringBuilder.append((char)unicode_integer);
+                }catch (NumberFormatException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return stringBuilder.toString();
     }
 }
 

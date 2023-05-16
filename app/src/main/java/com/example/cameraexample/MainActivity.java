@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     /* 이미지 socket 통신 부분 */
-    private String ip = "121.182.90.231";
+    //private String ip = "121.182.90.231";
+    private String ip = "165.229.125.16";
     private int port = 8000;
 
     String msg;
