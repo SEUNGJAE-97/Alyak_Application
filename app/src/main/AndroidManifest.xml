@@ -17,8 +17,8 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.CameraExample"
+        android:screenOrientation="portrait"
         >
-
         <activity
             android:name=".LoginActivity"
             android:exported="true">

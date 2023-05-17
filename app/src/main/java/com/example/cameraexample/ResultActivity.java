@@ -3,12 +3,17 @@ package com.example.cameraexample;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -20,13 +25,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -39,37 +50,45 @@ public class ResultActivity extends AppCompatActivity {
     String image_uri;
     static private String URL = "http://alyak.dothome.co.kr/DataRequest.php?Medicine_ID=";
 
+    private ViewPager2 viewPager;
+    private ImageSliderAdapter adapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-
 
         //이미지뷰에 띄우기 위한 imagefilepath와 데이터베이스에 요청하기위한 msg를 인턴트로 가져온다.
         String path = getIntent().getStringExtra("imagefilepath");
         String key = getIntent().getStringExtra("msg");
 
         URL = String.valueOf(URL + key);
-        //데이터베이스로부터 해당 이미지의 파일을 받는다.
+        request(URL);
 
+        //데이터베이스로부터 해당 이미지의 파일을 받는다.
         Medicine_ID = (TextView) findViewById(R.id.Medicine_ID);
         Medicine_Name = (TextView) findViewById(R.id.Medicine_Name);
         Medicine_classification = (TextView) findViewById(R.id.classification);
         Medicine_Color = (TextView) findViewById(R.id.Medicine_Color);
         corporate_name = (TextView) findViewById(R.id.corporate_name);
 
-        request(URL);
 
         // 경로로부터 파일을 받아 bitmap형식으로 디코딩한다.
         // 이후 ImageView에 해당 bitmap을 뿌려준다.
+
         bitmap = BitmapFactory.decodeFile(path);
-        alyak_img = (ImageView) findViewById(R.id.alyak_image);
-        alyak_img.setImageBitmap(bitmap);
+        // 이미지 비트맵 리스트 생성
+        List<Bitmap> imageBitmaps = new ArrayList<>();
+        imageBitmaps.add(bitmap);
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add(image_uri);
 
-        //bitmap에 두개의 이미지를 출력한다.
-
-
-
+        //alyak_img = (ImageView) findViewById(R.id.alyak_image);
+        //alyak_img.setImageBitmap(bitmap);
+        adapter = new ImageSliderAdapter(this, imageBitmaps, imageUrls);
+        viewPager = findViewById(R.id.sliderViewPager);
+        viewPager.setAdapter(adapter);
     }
 
     public void request(String URL) {
@@ -148,6 +167,7 @@ public class ResultActivity extends AppCompatActivity {
         }
         return sb.toString();
     }
+
 
 }
 
