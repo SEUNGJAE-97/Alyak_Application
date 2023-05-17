@@ -155,7 +155,6 @@ public class RegisterActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 };
 

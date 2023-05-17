@@ -21,15 +21,22 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ResultActivity extends AppCompatActivity {
     Bitmap bitmap;
     ImageView alyak_img;
     TextView Medicine_ID, Medicine_Name, Medicine_classification, Medicine_Color, corporate_name;
     static RequestQueue requestQueue;
+    JSONObject jsonObj;
+    String image_uri;
     static private String URL = "http://alyak.dothome.co.kr/DataRequest.php?Medicine_ID=";
 
     @Override
@@ -42,26 +49,27 @@ public class ResultActivity extends AppCompatActivity {
         String path = getIntent().getStringExtra("imagefilepath");
         String key = getIntent().getStringExtra("msg");
 
+        URL = String.valueOf(URL + key);
+        //데이터베이스로부터 해당 이미지의 파일을 받는다.
+
         Medicine_ID = (TextView) findViewById(R.id.Medicine_ID);
         Medicine_Name = (TextView) findViewById(R.id.Medicine_Name);
         Medicine_classification = (TextView) findViewById(R.id.classification);
         Medicine_Color = (TextView) findViewById(R.id.Medicine_Color);
         corporate_name = (TextView) findViewById(R.id.corporate_name);
-        String image_uri;
 
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(getApplicationContext());
-        }
-        URL = String.valueOf(URL + key);
-        //데이터베이스로부터 해당 이미지의 파일을 받는다.
         request(URL);
-        System.out.println(URL);
 
         // 경로로부터 파일을 받아 bitmap형식으로 디코딩한다.
         // 이후 ImageView에 해당 bitmap을 뿌려준다.
         bitmap = BitmapFactory.decodeFile(path);
         alyak_img = (ImageView) findViewById(R.id.alyak_image);
         alyak_img.setImageBitmap(bitmap);
+
+        //bitmap에 두개의 이미지를 출력한다.
+
+
+
     }
 
     public void request(String URL) {
@@ -70,7 +78,17 @@ public class ResultActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), "응답 : " + response, Toast.LENGTH_SHORT).show();
                 //유니코드 -> 한글
-                System.out.println(decode(response));
+                jsonObj = decode(response);
+                try {
+                    Medicine_ID.setText(jsonObj.getString("Medicine_ID"));
+                    Medicine_Name.setText(jsonObj.getString("Medicine_Name"));
+                    corporate_name.setText(jsonObj.getString("corporate_name"));
+                    Medicine_Color.setText(jsonObj.getString("Medicine_Color"));
+                    Medicine_classification.setText(jsonObj.getString("Medicine_classification"));
+                    image_uri = jsonObj.getString("image_uri");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -96,24 +114,41 @@ public class ResultActivity extends AppCompatActivity {
             }
         };
         request.setShouldCache(false);
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(request);
     }
-    public static String decode(String unicode){
-        String[] unicode_Array = unicode.split("\\\\u");
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (String code:unicode_Array){
-            if(!code.isEmpty()){
-                try{
-                    int unicode_integer = Integer.parseInt(code, 16);
-                    stringBuilder.append((char)unicode_integer);
-                }catch (NumberFormatException e){
-                    e.printStackTrace();
-                }
+    // json 파싱
+    public static JSONObject decode(String unicodeString){
+        JSONObject jsonObject = null;
+        try{
+            JSONArray jsonArray = parseUnicodeToJson(unicodeString);
+            jsonObject = jsonArray.getJSONObject(0);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+    public static JSONArray parseUnicodeToJson(String unicodeString) throws JSONException {
+        String decodedString = decodeUnicode(unicodeString);
+        return new JSONArray(decodedString);
+    }
+    
+    public static String decodeUnicode(String unicodeString) {
+        StringBuilder sb = new StringBuilder();
+        int length = unicodeString.length();
+        for (int i = 0; i < length; i++) {
+            if (unicodeString.charAt(i) == '\\' && i + 1 < length && unicodeString.charAt(i + 1) == 'u') {
+                String hexCode = unicodeString.substring(i + 2, i + 6);
+                int charCode = Integer.parseInt(hexCode, 16);
+                sb.append((char) charCode);
+                i += 5;
+            } else {
+                sb.append(unicodeString.charAt(i));
             }
         }
-        return stringBuilder.toString();
+        return sb.toString();
     }
+
 }
 
 
