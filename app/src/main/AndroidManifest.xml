@@ -47,6 +47,9 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
+            <meta-data
+                android:name="com.bumptech.glide.integration.okhttp3.OkHttpLibraryGlideModule"
+                android:value="GlideModule" />
         </provider>
     </application>
 

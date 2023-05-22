@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         //userID를 저장한다.
         //image를 저장할 폴더이름으로 활용한다.
         String userName = getIntent().getStringExtra("UserName");
+        String UserEmail = getIntent().getStringExtra("UserEmail");
 
         // 사진 저장 후 미디어 스캐닝을 돌려줘야 갤러리에 반영됨.
         mMediaScanner = MediaScanner.getInstance(getApplicationContext());
@@ -131,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                intent.putExtra("UserEmail",UserEmail);
+                intent.putExtra("userName", userName);
                 intent.putExtra("msg", msg);
                 intent.putExtra("imagefilepath",imageFilePath);
                 startActivity( intent );

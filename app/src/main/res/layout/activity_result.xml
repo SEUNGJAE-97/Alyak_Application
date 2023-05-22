@@ -8,6 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,20 +22,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/sliderViewPager"
+            <!--<androidx.viewpager2.widget.ViewPager2-->
+            <!--    android:id="@+id/sliderViewPager"-->
+               <!-- android:layout_width="match_parent"-->
+                <!--android:layout_height="524dp"-->
+                <!--android:layout_gravity="top"-->
+              />
+            <ImageView
+                android:id="@+id/alyak_image"
                 android:layout_width="match_parent"
-                android:layout_height="524dp"
-                android:layout_gravity="top"
+                android:layout_height="500dp"
+                android:layout_gravity="top"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_gravity="bottom|end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:contentDescription="@null"
+                android:src="@drawable/baseline_add_box_24"
                 />
-<!---->
-<!--            <ImageView-->
-<!--                android:id="@+id/alyak_image"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="524dp"-->
-<!--                android:layout_gravity="top" />-->
-
-
             <TableLayout
                 android:id="@+id/list_item"
                 android:layout_width="match_parent"
@@ -187,8 +195,10 @@
                         android:id ="@+id/corporate_name"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
+
                 </TableRow>
             </TableLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

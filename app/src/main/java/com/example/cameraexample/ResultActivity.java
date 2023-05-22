@@ -1,10 +1,14 @@
 package com.example.cameraexample;
 
 
+import static com.android.volley.VolleyLog.TAG;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +32,8 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,51 +53,83 @@ public class ResultActivity extends AppCompatActivity {
     TextView Medicine_ID, Medicine_Name, Medicine_classification, Medicine_Color, corporate_name;
     static RequestQueue requestQueue;
     JSONObject jsonObj;
-    String image_uri;
     static private String URL = "http://alyak.dothome.co.kr/DataRequest.php?Medicine_ID=";
-
-    private ViewPager2 viewPager;
-    private ImageSliderAdapter adapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        //이미지뷰에 띄우기 위한 imagefilepath와 데이터베이스에 요청하기위한 msg를 인턴트로 가져온다.
-        String path = getIntent().getStringExtra("imagefilepath");
-        String key = getIntent().getStringExtra("msg");
-
-        URL = String.valueOf(URL + key);
-        request(URL);
-
-        //데이터베이스로부터 해당 이미지의 파일을 받는다.
+        FloatingActionButton fab = findViewById(R.id.fab);
+        alyak_img = (ImageView)findViewById(R.id.alyak_image);
         Medicine_ID = (TextView) findViewById(R.id.Medicine_ID);
         Medicine_Name = (TextView) findViewById(R.id.Medicine_Name);
         Medicine_classification = (TextView) findViewById(R.id.classification);
         Medicine_Color = (TextView) findViewById(R.id.Medicine_Color);
         corporate_name = (TextView) findViewById(R.id.corporate_name);
 
+        //이미지뷰에 띄우기 위한 imagefilepath와 데이터베이스에 요청하기위한 msg를 인턴트로 가져온다.
+        String path = getIntent().getStringExtra("imagefilepath");
+        String key = getIntent().getStringExtra("msg");
+        String UserEmail = getIntent().getStringExtra("UserEmail");
 
-        // 경로로부터 파일을 받아 bitmap형식으로 디코딩한다.
-        // 이후 ImageView에 해당 bitmap을 뿌려준다.
-
+        URL = String.valueOf(URL + key);
         bitmap = BitmapFactory.decodeFile(path);
-        // 이미지 비트맵 리스트 생성
-        List<Bitmap> imageBitmaps = new ArrayList<>();
-        imageBitmaps.add(bitmap);
-        List<String> imageUrls = new ArrayList<>();
-        imageUrls.add(image_uri);
+        request(URL, new RequestCallback(){
+            @Override
+            public void onImageUriReceived(final String imageUri) {
+                // 이미지 비트맵 리스트 생성
+                Glide.with(getApplicationContext()).asBitmap().load(imageUri).into(alyak_img);
+                alyak_img.setOnClickListener(new View.OnClickListener() {
+                    boolean click = true;
+                    @Override
+                    public void onClick(View v) {
+                        if (click) {
+                            // 이미지 1 (bitmap)으로 교체
+                            alyak_img.setImageBitmap(bitmap);
+                        } else {
+                            // 이미지 2 (Glide)로 교체
+                            Glide.with(getApplicationContext()).asBitmap().load(imageUri).into(alyak_img);
+                        }
+                        // click 변수 값 반전
+                        click = !click;
+                    }
+                });
+            }
+        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "내 알약 목록에 추가되었습니다.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //응답처리
+                        try {
+                            JSONObject jsonObject = new JSONObject( response );
+                            boolean success = jsonObject.getBoolean( "success" );
+                            if(success) {
+                                Log.d(TAG, String.valueOf(true));
+                            }
+                         }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                AddRequest addRequest = new AddRequest(UserEmail, key, responseListener, null);
+                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                queue.add(addRequest);
 
-        //alyak_img = (ImageView) findViewById(R.id.alyak_image);
-        //alyak_img.setImageBitmap(bitmap);
-        adapter = new ImageSliderAdapter(this, imageBitmaps, imageUrls);
-        viewPager = findViewById(R.id.sliderViewPager);
-        viewPager.setAdapter(adapter);
+            }
+        });
     }
 
-    public void request(String URL) {
+    public interface RequestCallback {
+        void onImageUriReceived(String imageUri);
+    }
+
+    public void request(String URL, RequestCallback callback) {
         StringRequest request = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -99,15 +137,18 @@ public class ResultActivity extends AppCompatActivity {
                 //유니코드 -> 한글
                 jsonObj = decode(response);
                 try {
+                    //데이터베이스로부터 해당 이미지의 파일을 받는다.
                     Medicine_ID.setText(jsonObj.getString("Medicine_ID"));
                     Medicine_Name.setText(jsonObj.getString("Medicine_Name"));
                     corporate_name.setText(jsonObj.getString("corporate_name"));
                     Medicine_Color.setText(jsonObj.getString("Medicine_Color"));
                     Medicine_classification.setText(jsonObj.getString("Medicine_classification"));
-                    image_uri = jsonObj.getString("image_uri");
+                    String imageUri = jsonObj.getString("image_uri");
+                    callback.onImageUriReceived(imageUri);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -167,8 +208,6 @@ public class ResultActivity extends AppCompatActivity {
         }
         return sb.toString();
     }
-
-
 }
 
 
