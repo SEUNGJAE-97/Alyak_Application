@@ -3,6 +3,7 @@ package com.example.cameraexample;
 
 import static com.android.volley.VolleyLog.TAG;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -54,19 +55,23 @@ public class ResultActivity extends AppCompatActivity {
     static RequestQueue requestQueue;
     JSONObject jsonObj;
     static private String URL = "http://alyak.dothome.co.kr/DataRequest.php?Medicine_ID=";
-
+    private boolean isOtherButtonsVisible = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
         alyak_img = (ImageView)findViewById(R.id.alyak_image);
         Medicine_ID = (TextView) findViewById(R.id.Medicine_ID);
         Medicine_Name = (TextView) findViewById(R.id.Medicine_Name);
         Medicine_classification = (TextView) findViewById(R.id.classification);
         Medicine_Color = (TextView) findViewById(R.id.Medicine_Color);
         corporate_name = (TextView) findViewById(R.id.corporate_name);
+
+        FloatingActionButton fab = findViewById(R.id.fab);//아래 리스트를 보여주는 버튼
+        FloatingActionButton fabCamera = findViewById(R.id.fabCamera);// MainActivity로 이동
+        FloatingActionButton fabList = findViewById(R.id.fablist);//My_Alyak Activity로 이동
+        FloatingActionButton fabEdit = findViewById(R.id.fabEdit);//USER DB에 Medicine_ID 추가버튼
 
         //이미지뷰에 띄우기 위한 imagefilepath와 데이터베이스에 요청하기위한 msg를 인턴트로 가져온다.
         String path = getIntent().getStringExtra("imagefilepath");
@@ -98,7 +103,64 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
         fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                System.out.println("click");
+                isOtherButtonsVisible = !isOtherButtonsVisible;
+                if(isOtherButtonsVisible){
+                    fabCamera.setVisibility(View.VISIBLE);
+                    fabEdit.setVisibility(View.VISIBLE);
+                    fabList.setVisibility(View.VISIBLE);
+                }else{
+                    fabCamera.setVisibility(View.GONE);
+                    fabEdit.setVisibility(View.GONE);
+                    fabList.setVisibility(View.GONE);
+                }
+            }
+        });
+        fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
+            public void onClick(View view) {
+                //MainActivity로 이동
+                Intent intent = new Intent( ResultActivity.this, MainActivity.class );
+                startActivity( intent );
+            }
+        });
+        fabEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //USER DB에 Medicine_ID 추가버튼
+                Snackbar.make(view, "내 알약 목록에 추가되었습니다.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //응답처리
+                        try {
+                            JSONObject jsonObject = new JSONObject( response );
+                            boolean success = jsonObject.getBoolean( "success" );
+                            if(success) {
+                                Log.d(TAG, String.valueOf(true));
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                AddRequest addRequest = new AddRequest(UserEmail, key, responseListener, null);
+                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                queue.add(addRequest);
+            }
+        });
+        fabList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //My_Alyak Activity로 이동
+                Intent intent = new Intent( ResultActivity.this, ListActivity.class );
+                startActivity( intent );
+            }
+        });
+        /*
+        @Override
             public void onClick(View view) {
                 Snackbar.make(view, "내 알약 목록에 추가되었습니다.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -122,7 +184,7 @@ public class ResultActivity extends AppCompatActivity {
                 queue.add(addRequest);
 
             }
-        });
+         */
     }
 
     public interface RequestCallback {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +8,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,27 +21,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
-            <!--<androidx.viewpager2.widget.ViewPager2-->
-            <!--    android:id="@+id/sliderViewPager"-->
-               <!-- android:layout_width="match_parent"-->
-                <!--android:layout_height="524dp"-->
-                <!--android:layout_gravity="top"-->
-              />
             <ImageView
                 android:id="@+id/alyak_image"
                 android:layout_width="match_parent"
                 android:layout_height="500dp"
-                android:layout_gravity="top"/>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_gravity="bottom|end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:contentDescription="@null"
-                android:src="@drawable/baseline_add_box_24"
+                android:layout_gravity="top"
                 />
+
             <TableLayout
                 android:id="@+id/list_item"
                 android:layout_width="match_parent"
@@ -195,10 +180,64 @@
                         android:id ="@+id/corporate_name"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
-
                 </TableRow>
             </TableLayout>
-
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:orientation="vertical"
+        >
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fablist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@mipmap/ic_launcher_my_list"
+        app:fabSize="mini"
+        android:visibility="gone"
+        app:layout_anchor="@id/fab"
+        app:layout_constraintTop_toTopOf="@id/fab"
+        app:layout_constraintBottom_toBottomOf="@id/fab"
+        app:layout_constraintStart_toStartOf="@id/fab"
+        app:layout_constraintEnd_toEndOf="@id/fab"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:fabSize="mini"
+        app:layout_anchor="@id/fab"
+        android:visibility="gone"
+        android:src ="@mipmap/ic_launcher_camera"
+        app:layout_constraintTop_toTopOf="@id/fab"
+        app:layout_constraintBottom_toBottomOf="@id/fab"
+        app:layout_constraintStart_toStartOf="@id/fab"
+        app:layout_constraintEnd_toEndOf="@id/fab"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@mipmap/ic_launcher_list_add"
+        app:fabSize="mini"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/fab"
+        app:layout_constraintBottom_toBottomOf="@id/fab"
+        app:layout_constraintStart_toStartOf="@id/fab"
+        app:layout_constraintEnd_toEndOf="@id/fab"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:contentDescription="@null"
+        android:src="@mipmap/ic_launcher_add"
+        app:layout_anchorGravity="bottom"/>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
