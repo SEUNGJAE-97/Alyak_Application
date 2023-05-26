@@ -156,6 +156,7 @@ public class ResultActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //My_Alyak Activity로 이동
                 Intent intent = new Intent( ResultActivity.this, ListActivity.class );
+                intent.putExtra("UserEmail",UserEmail);
                 startActivity( intent );
             }
         });
