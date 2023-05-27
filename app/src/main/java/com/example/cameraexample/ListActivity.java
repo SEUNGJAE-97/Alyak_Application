@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.MediaSession2Service;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.OnIte
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_list);
         recyclerView = findViewById(R.id.recycle_view);
+
         itemAdapter = new ItemAdapter();
         recyclerView.setAdapter(itemAdapter);
         itemAdapter.setOnItemClickListener(this);
@@ -70,17 +72,17 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.OnIte
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
+                System.out.println(items);
                 switch(direction){
                     case ItemTouchHelper.LEFT:
                         Item deleteItem = items.get(position);
-                        // volley 통신을 통해 DB상에 존재하는 position 데이터를 삭제한다.
-                        // **구현 필요 ***
-                        delete_Item_From_DB(deleteItem, position);
-                        /*
                         items.remove(position);
                         itemAdapter.removeItem(position);
                         itemAdapter.notifyItemRemoved(position);
-                         */
+                        itemAdapter.notifyDataSetChanged();
+                        // volley 통신을 통해 DB상에 존재하는 position 데이터를 삭제한다.
+                        // **구현**
+                        delete_Item_From_DB(deleteItem, position);
                         break;
                 }
             }
@@ -99,7 +101,7 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.OnIte
             }
         }).attachToRecyclerView(recyclerView);
         //*** Medicine_ID를 통해 Medicine_Name을 가져와서 뿌려주도록 한다.***
-        //itemAdapter.removeAllItem();
+        itemAdapter.removeAllItem();
         // **구현**
         requestQueue = Volley.newRequestQueue(this);
         get_Medicine_ID();
@@ -108,39 +110,32 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.OnIte
         recyclerView.startLayoutAnimation();
     }
     private void delete_Item_From_DB(Item item, int position){
-        Map<String, String> map = new HashMap<>();
-        map.put("Medicine_ID", item.getTitle());
-        map.put("UserEmail", UserEmail);
-
-        String url = "http://~~";
-        StringRequest request = new StringRequest(Request.Method.POST, url,
+        String url = "http://alyak.dothome.co.kr/Delete.php?UserEmail="+UserEmail+"&Medicine_ID="+item.getTitle();
+        System.out.println(url);
+        StringRequest request = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        items.remove(position);
-                        itemAdapter.removeItem(position);
-                        itemAdapter.notifyItemRemoved(position);
+                        Toast.makeText(getApplicationContext(), "deleted", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
+                        Toast.makeText(getApplicationContext(),"Delete Error", Toast.LENGTH_SHORT).show();
                     }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return map;
-            }
-        };
+                });
         requestQueue.add(request);
     }
     @Override
     public void onItemClick(Item item){
         Toast.makeText(this, "clicked : "+item.getTitle(), Toast.LENGTH_SHORT).show();
         //클릭시 activity_result layout으로 이동한다.
-        //**구현 필요..**
-
+        //**구현**
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("Medicine_ID", item.getTitle());
+        startActivity(intent);
     }
     private void get_Medicine_ID(){
         String url = URL+UserEmail;
@@ -148,13 +143,20 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.OnIte
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String[] Medicine_IDs = response.split("<br>");
+                        response = response.replace("<br>", "");
+                        String[] Medicine_IDs = response.split(",");
+                        /*
                         for(String medicine_ID : Medicine_IDs){
-                            Item item = new Item();
-                            item.setTitle(medicine_ID);
-                            get_Data(medicine_ID, item);
-                            itemAdapter.notifyDataSetChanged();
+                            get_Data(medicine_ID);
+                            System.out.println(medicine_ID);
                         }
+                         */
+                        for (int i = 0; i < Medicine_IDs.length; i++) {
+                            String medicine_ID = Medicine_IDs[i].trim(); // 공백 제거
+                            get_Data(medicine_ID);
+                            System.out.println(medicine_ID);
+                        }
+                        //itemAdapter.notifyDataSetChanged();
                     }
                 },
                 new Response.ErrorListener() {
@@ -165,7 +167,7 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.OnIte
                 });
         requestQueue.add(request);
     }
-    private void get_Data(String Medicine_ID, final Item item){
+    private void get_Data(String Medicine_ID){
         String url = "http://alyak.dothome.co.kr/NameRequest.php?Medicine_ID=" + Medicine_ID;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -175,17 +177,23 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.OnIte
                             boolean success = response.getBoolean("success");
                             if(success){
                                 String medicineName = response.getString("Medicine_Name");
+                                Item item = new Item();
+                                item.setTitle(Medicine_ID);
                                 item.setDescription(medicineName);
 
-                                // RecyclerView를 갱신하기 위해 itemAdapter.notifyDataSetChanged() 호출
+                                System.out.println(url);
+
+                                // Arraylist에 추가해야함...(삽질햇네)
+                                items.add(item);
                                 itemAdapter.addItem(item);
                                 itemAdapter.notifyDataSetChanged();
                             }else{
-                                String message = response.getString("message");
-                                Toast.makeText(getApplicationContext(),"caused : "+ message, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(),"occurred error", Toast.LENGTH_SHORT).show();
+                                System.out.println(url);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Toast.makeText(getApplicationContext(),"occurred error", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },

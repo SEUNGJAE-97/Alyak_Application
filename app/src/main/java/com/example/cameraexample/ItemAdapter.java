@@ -2,6 +2,7 @@ package com.example.cameraexample;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,14 +45,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
         if (viewHolder.getAdapterPosition() > lastPosition){
             Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_row);
             ((ViewHolder)viewHolder).itemView.startAnimation(animation);
-            /*
             Item item = items.get(position);
             viewHolder.setItem(item);
 
-             */
         }
-        Item item = items.get(position);
-        viewHolder.setItem(item);
+        //Item item = items.get(position);
+        //viewHolder.setItem(item);
     }
 
     public void addItem(Item item){
@@ -91,9 +90,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION && listener != null){
                         listener.onItemClick(items.get(position));
+                        Intent intent = new Intent(itemView.getContext(), ResultActivity.class );
+                        intent.putExtra("Medicine_ID", items.get(position).getTitle());
+
+                        itemView.getContext().startActivity(intent);
                     }
                 }
             });
+
         }
         public void setItem(Item item){
             title_view.setText(item.getTitle());
