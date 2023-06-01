@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     /* 이미지 socket 통신 부분 */
-    private String ip = "119.201.70.219";
+    private String ip = "220.122.16.175";
     //private String ip = "165.229.125.16";
     private int port = 8000;
 
@@ -95,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         photoFile = createImageFile();
                     } catch (IOException ignored) {
-
-
                     }
                     if (photoFile != null) {
                         photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile);
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 이미지 전송 버튼 클릭시 이벤트 발생
         // filePath로 이미지를 선택하여 소켓통신으로
-        Button btn_Send = (Button)findViewById(R.id.btn_send);
+        ImageButton btn_Send = (ImageButton)findViewById(R.id.btn_send);
         btn_Send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
@@ -138,6 +137,15 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("imagefilepath",imageFilePath);
                 startActivity( intent );
                 }
+        });
+        ImageButton btn_list = (ImageButton)findViewById(R.id.btn_list);
+        btn_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                intent.putExtra("UserEmail",UserEmail);
+                startActivity(intent);
+            }
         });
     }
 

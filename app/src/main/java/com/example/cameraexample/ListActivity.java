@@ -133,8 +133,9 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.OnIte
         Toast.makeText(this, "clicked : "+item.getTitle(), Toast.LENGTH_SHORT).show();
         //클릭시 activity_result layout으로 이동한다.
         //**구현**
-        Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("Medicine_ID", item.getTitle());
+        Intent intent = new Intent(this, list_to_info.class);
+        intent.putExtra("msg", item.getTitle());
+        intent.putExtra("UserEmail", UserEmail);
         startActivity(intent);
     }
     private void get_Medicine_ID(){

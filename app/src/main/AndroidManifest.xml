@@ -41,6 +41,9 @@
         <activity
             android:name=".ListActivity"
             android:exported="false"/>
+        <activity
+            android:name=".list_to_info"
+            android:exported="false"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

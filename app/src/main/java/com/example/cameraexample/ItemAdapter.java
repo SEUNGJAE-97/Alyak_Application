@@ -90,9 +90,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION && listener != null){
                         listener.onItemClick(items.get(position));
-                        Intent intent = new Intent(itemView.getContext(), ResultActivity.class );
-                        intent.putExtra("Medicine_ID", items.get(position).getTitle());
-
+                        Intent intent = new Intent(itemView.getContext(), list_to_info.class );
+                        intent.putExtra("msg", items.get(position).getTitle());
                         itemView.getContext().startActivity(intent);
                     }
                 }

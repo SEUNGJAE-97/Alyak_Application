@@ -5,8 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".MainActivity">
     <LinearLayout
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
@@ -17,22 +19,46 @@
 
     </LinearLayout>
     <LinearLayout
+        android:layout_margin="10dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <Button
+        <ImageButton
             android:id="@+id/btn_capture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="take_pic">
-        </Button>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginLeft="35dp"
+            android:background="@mipmap/ic_pic"
+            >
+        </ImageButton>
+        <ImageButton
             android:id="@+id/btn_send"
-            android:text="send">
-        </Button>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text ="send"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginLeft="35dp"
+            android:background="@mipmap/ic_send"
+            >
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/btn_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text ="send"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginLeft="35dp"
+            android:background="@mipmap/ic_list"
+            >
+        </ImageButton>
     </LinearLayout>
 
 </LinearLayout>
