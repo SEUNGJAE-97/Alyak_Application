@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         btn_Send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
+                msg = null;
                 SendImageThread thread = new SendImageThread();
                 thread.start();
                 //System.out.println(userName);

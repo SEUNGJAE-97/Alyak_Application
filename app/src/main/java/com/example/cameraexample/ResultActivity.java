@@ -77,7 +77,9 @@ public class ResultActivity extends AppCompatActivity {
         String path = getIntent().getStringExtra("imagefilepath");
         String key = getIntent().getStringExtra("msg");
         String UserEmail = getIntent().getStringExtra("UserEmail");
-
+        if(URL != "http://alyak.dothome.co.kr/DataRequest.php?Medicine_ID="){
+            URL = "http://alyak.dothome.co.kr/DataRequest.php?Medicine_ID=";
+        }
         URL = String.valueOf(URL + key);
         bitmap = BitmapFactory.decodeFile(path);
         request(URL, new RequestCallback(){
@@ -196,6 +198,7 @@ public class ResultActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                System.out.println(URL);
                 Toast.makeText(getApplicationContext(), "응답 : " + response, Toast.LENGTH_SHORT).show();
                 //유니코드 -> 한글
                 jsonObj = decode(response);
