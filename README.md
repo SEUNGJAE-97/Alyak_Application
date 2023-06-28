@@ -19,6 +19,8 @@
 <img src="https://github.com/SEUNGJAE-97/Senior_project/assets/117517535/7152e206-671f-49fa-b031-291f2bb6d2f4" width="250" height="400"> 
 <img src="https://github.com/SEUNGJAE-97/Senior_project/assets/117517535/d0d782de-1522-4513-bd41-9efca6ea20c0" width="250" height="400"> 
 
+https://youtu.be/DMmX1Lnrn_U
+
 - 로그인 버튼을 클릭시 사용자 DB의 데이터를 조회하여 응답(True/False)을 받고, 
   True일때 User_ID와 함께 화면전환을 한다. 
 - 휴대폰 내장 카메라 어플로 사진을 촬영하여 ImageView에 Bitmap형식으로 출력한다. 
