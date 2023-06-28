@@ -19,8 +19,6 @@
 <img src="https://github.com/SEUNGJAE-97/Senior_project/assets/117517535/7152e206-671f-49fa-b031-291f2bb6d2f4" width="250" height="400"> 
 <img src="https://github.com/SEUNGJAE-97/Senior_project/assets/117517535/d0d782de-1522-4513-bd41-9efca6ea20c0" width="250" height="400"> 
 
-[![Video Label](http://img.youtube.com/vi/DMmX1Lnrn_U/0.jpg)](https://youtu.be/DMmX1Lnrn_U)
-
 - 로그인 버튼을 클릭시 사용자 DB의 데이터를 조회하여 응답(True/False)을 받고, 
   True일때 User_ID와 함께 화면전환을 한다. 
 - 휴대폰 내장 카메라 어플로 사진을 촬영하여 ImageView에 Bitmap형식으로 출력한다. 
@@ -34,3 +32,7 @@
 - 사용자 DB에 알약을 담을 수 있는 기능을 구현하였다.
 
 - 사용자가 섭취중인 알약 리스트를 보여주는 List_activity화면에서는 삭제 및 알약정보 조회 기능을 구현하였다.
+
+## 📹 시연 영상
+
+[![Video Label](http://img.youtube.com/vi/DMmX1Lnrn_U/0.jpg)](https://youtu.be/DMmX1Lnrn_U)
