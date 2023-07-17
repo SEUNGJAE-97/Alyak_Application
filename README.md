@@ -9,7 +9,7 @@
 <br>
 
 ## 🔧 주요 기능 
-- Python 서버와의 full-duplex socket 통신 
+- Python 서버와의 half-duplex socket 통신 
 - DB(Mysql)로부터 데이터를 받거나 DB에 존재하는 사용자 데이터를 수정한다.
 
 ## 📱 실행 화면 
